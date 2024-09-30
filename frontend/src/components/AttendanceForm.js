@@ -18,17 +18,9 @@ const AttendanceForm = ({ addRecord }) => {
     // Convert 24-hour format to 12-hour format with AM/PM
     const formatTime12Hour = (time) => {
         let [hour, minute] = time.split(':').map(Number);
-        let period = hour >= 12 ? 'PM' : 'AM'; // Using let to allow reassignment
-
-        // Adjust the hour for 12-hour format
-        if (hour === 0) {
-            hour = 12; // Midnight should be 12:00 AM
-        } else if (hour === 12) {
-            period = 'PM'; // Noon should be 12:00 PM
-        } else if (hour > 12) {
-            hour -= 12; // Convert to 12-hour format for PM times
-        }
-
+        const isPM = hour >= 12;
+        hour = hour % 12 || 12; // Convert hour to 12-hour format, with 12 instead of 0
+        const period = isPM ? 'PM' : 'AM';
         return `${hour}:${minute < 10 ? '0' + minute : minute} ${period}`;
     };
 
@@ -62,6 +54,7 @@ const AttendanceForm = ({ addRecord }) => {
         }
     };
 
+    // Manually calculate work hours difference in HH.MM format
     const calculateWorkHours = (inTime, outTime) => {
         const [inHour, inMinute] = inTime.split(':').map(Number);
         const [outHour, outMinute] = outTime.split(':').map(Number);
