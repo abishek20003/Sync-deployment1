@@ -17,10 +17,11 @@ const AttendanceForm = ({ addRecord }) => {
 
     // Convert 24-hour format to 12-hour format with AM/PM
     const formatTime12Hour = (time) => {
-        const [hour, minute] = time.split(':');
+        let [hour, minute] = time.split(':').map(Number);
         const isPM = hour >= 12;
-        const adjustedHour = isPM ? hour - 12 : hour;
-        return `${adjustedHour === 0 ? 12 : adjustedHour}:${minute} ${isPM ? 'PM' : 'AM'}`;
+        hour = hour % 12 || 12; // Convert hour to 12-hour format, with 12 instead of 0
+        const period = isPM ? 'PM' : 'AM';
+        return `${hour}:${minute < 10 ? '0' + minute : minute} ${period}`;
     };
 
     const handleSubmit = async (e) => {
@@ -56,14 +57,19 @@ const AttendanceForm = ({ addRecord }) => {
     const calculateWorkHours = (inTime, outTime) => {
         const inTimeDate = new Date(`1970-01-01T${inTime}:00`);
         const outTimeDate = new Date(`1970-01-01T${outTime}:00`);
-        let diff = (outTimeDate - inTimeDate) / (1000 * 60); // Get the difference in minutes
+        let diffInMinutes = (outTimeDate - inTimeDate) / (1000 * 60); // Get the difference in minutes
+
+        // Handle negative time difference (crossing midnight)
+        if (diffInMinutes < 0) {
+            diffInMinutes += 24 * 60; // Add 24 hours worth of minutes
+        }
 
         // Convert the minutes into hours and minutes (HH.MM format)
-        const hours = Math.floor(diff / 60);
-        const minutes = Math.floor(diff % 60);
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = Math.round(diffInMinutes % 60);
 
-        // Format the result to two decimal places
-        const formattedWorkHours = hours + '.' + (minutes < 10 ? `0${minutes}` : minutes);
+        // Format the result to two decimal places (e.g., 1.35)
+        const formattedWorkHours = hours + (minutes / 60).toFixed(2).slice(1); // .slice(1) to keep .MM format
         return formattedWorkHours;
     };
 
