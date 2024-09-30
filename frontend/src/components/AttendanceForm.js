@@ -9,18 +9,34 @@ const AttendanceForm = ({ addRecord }) => {
     const [outTime, setOutTime] = useState('');
     const [attendanceDate, setAttendanceDate] = useState('');
 
-    // Set today's date as default
+    // Set today's date and current time as default
     useEffect(() => {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
         setAttendanceDate(today);
+
+        // Get the current time in HH:MM format
+        const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        setInTime(currentTime);
+        setOutTime(currentTime);
     }, []);
 
     // Convert 24-hour format to 12-hour format with AM/PM
     const formatTime12Hour = (time) => {
-        const [hour, minute] = time.split(':');
-        const isPM = hour >= 12;
-        const adjustedHour = isPM ? hour - 12 : hour;
-        return `${adjustedHour === 0 ? 12 : adjustedHour}:${minute} ${isPM ? 'PM' : 'AM'}`;
+        let [hour, minute] = time.split(':');
+        hour = parseInt(hour, 10);
+
+        // Correctly determine AM/PM based on the 24-hour time
+        const period = hour >= 12 ? 'PM' : 'AM';
+
+        // Convert 24-hour time to 12-hour format
+        if (hour === 0) {
+            hour = 12; // Midnight (00:00) case
+        } else if (hour > 12) {
+            hour -= 12; // Convert times greater than 12 to 12-hour format
+        }
+
+        // Return the formatted 12-hour time with the period
+        return `${hour}:${minute} ${period}`;
     };
 
     const handleSubmit = async (e) => {
