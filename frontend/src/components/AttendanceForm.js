@@ -18,9 +18,17 @@ const AttendanceForm = ({ addRecord }) => {
     // Convert 24-hour format to 12-hour format with AM/PM
     const formatTime12Hour = (time) => {
         let [hour, minute] = time.split(':').map(Number);
-        const isPM = hour >= 12;
-        hour = hour % 12 || 12; // Convert hour to 12-hour format, with 12 instead of 0
-        const period = isPM ? 'PM' : 'AM';
+        let period = hour >= 12 ? 'PM' : 'AM'; // Using let to allow reassignment
+
+        // Adjust the hour for 12-hour format
+        if (hour === 0) {
+            hour = 12; // Midnight should be 12:00 AM
+        } else if (hour === 12) {
+            period = 'PM'; // Noon should be 12:00 PM
+        } else if (hour > 12) {
+            hour -= 12; // Convert to 12-hour format for PM times
+        }
+
         return `${hour}:${minute < 10 ? '0' + minute : minute} ${period}`;
     };
 
@@ -55,13 +63,17 @@ const AttendanceForm = ({ addRecord }) => {
     };
 
     const calculateWorkHours = (inTime, outTime) => {
-        const inTimeDate = new Date(`1970-01-01T${inTime}:00`);
-        const outTimeDate = new Date(`1970-01-01T${outTime}:00`);
-        let diffInMinutes = (outTimeDate - inTimeDate) / (1000 * 60); // Get the difference in minutes
+        const [inHour, inMinute] = inTime.split(':').map(Number);
+        const [outHour, outMinute] = outTime.split(':').map(Number);
 
-        // Handle negative time difference (crossing midnight)
+        // Convert time into minutes from the start of the day
+        const inTotalMinutes = inHour * 60 + inMinute;
+        const outTotalMinutes = outHour * 60 + outMinute;
+
+        // Calculate the difference in minutes, handling overnight shifts
+        let diffInMinutes = outTotalMinutes - inTotalMinutes;
         if (diffInMinutes < 0) {
-            diffInMinutes += 24 * 60; // Add 24 hours worth of minutes
+            diffInMinutes += 24 * 60; // Add 24 hours of minutes if time crosses midnight
         }
 
         // Convert the minutes into hours and minutes (HH.MM format)
