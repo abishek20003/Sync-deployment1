@@ -14,21 +14,29 @@ const AttendanceForm = ({ addRecord }) => {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
         setAttendanceDate(today);
 
-        // Get the current time in 12-hour format
-        const currentTime = new Date();
-        const formattedTime = formatTime12Hour(currentTime);
-        setInTime(formattedTime);
-        setOutTime(formattedTime);
+        // Get the current time in HH:MM format
+        const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+        setInTime(currentTime);
+        setOutTime(currentTime);
     }, []);
 
-    // Convert Date object to 12-hour format HH:MM AM/PM
-    const formatTime12Hour = (date) => {
-        let hours = date.getHours();
-        const minutes = date.getMinutes();
-        const period = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12; // Convert to 12-hour format, converting 0 to 12
-        const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes; // Add leading zero if needed
-        return `${hours}:${formattedMinutes} ${period}`;
+    // Convert 24-hour format to 12-hour format with AM/PM
+    const formatTime12Hour = (time) => {
+        let [hour, minute] = time.split(':');
+        hour = parseInt(hour, 10);
+
+        // Correctly determine AM/PM based on the 24-hour time
+        const period = hour >= 12 ? 'PM' : 'AM';
+
+        // Convert 24-hour time to 12-hour format
+        if (hour === 0) {
+            hour = 12; // Midnight (00:00) case
+        } else if (hour > 12) {
+            hour -= 12; // Convert times greater than 12 to 12-hour format
+        }
+
+        // Return the formatted 12-hour time with the period
+        return `${hour}:${minute} ${period}`;
     };
 
     const handleSubmit = async (e) => {
@@ -40,8 +48,8 @@ const AttendanceForm = ({ addRecord }) => {
             employeeID,
             department,
             attendanceDate,
-            inTime: formatTime12HourTo24(inTime), // Convert back to 24-hour format for the backend
-            outTime: formatTime12HourTo24(outTime),
+            inTime: formatTime12Hour(inTime),
+            outTime: formatTime12Hour(outTime),
             workHours,
         };
 
@@ -61,23 +69,9 @@ const AttendanceForm = ({ addRecord }) => {
         }
     };
 
-    // Function to convert 12-hour format to 24-hour format
-    const formatTime12HourTo24 = (time) => {
-        let [timePart, period] = time.split(' ');
-        let [hours, minutes] = timePart.split(':');
-        hours = parseInt(hours, 10);
-        if (period === 'PM' && hours < 12) {
-            hours += 12; // Convert PM to 24-hour format
-        }
-        if (period === 'AM' && hours === 12) {
-            hours = 0; // Midnight case
-        }
-        return `${hours.toString().padStart(2, '0')}:${minutes}`; // Format as HH:MM
-    };
-
     const calculateWorkHours = (inTime, outTime) => {
-        const inTimeDate = new Date(`1970-01-01T${formatTime12HourTo24(inTime)}:00`);
-        const outTimeDate = new Date(`1970-01-01T${formatTime12HourTo24(outTime)}:00`);
+        const inTimeDate = new Date(`1970-01-01T${inTime}:00`);
+        const outTimeDate = new Date(`1970-01-01T${outTime}:00`);
         let diff = (outTimeDate - inTimeDate) / (1000 * 60); // Get the difference in minutes
 
         // Convert the minutes into hours and minutes (HH.MM format)
