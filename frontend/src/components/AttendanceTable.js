@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from './axiosConfig'; // Import axiosConfig
+import './AttendanceTable.css'; // Make sure to create this CSS file
 
 const AttendanceTable = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
@@ -27,7 +28,6 @@ const AttendanceTable = () => {
         return () => clearInterval(interval);
     }, []); // Empty dependency array to run only on initial render
 
-
     // Delete attendance record
     const deleteAttendanceRecord = async (id) => {
         try {
@@ -40,41 +40,22 @@ const AttendanceTable = () => {
     };
 
     return (
-        <div>
+        <div className="attendance-table-container">
             <h2>Today's Attendance</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Employee Name</th>
-                        <th>Employee ID</th>
-                        <th>Department</th>
-                        <th>Attendance Date</th>
-                        <th>In Time</th>
-                        <th>Out Time</th>
-                        <th>Work Hours</th>
-                        <th>Action</th> {/* Add Action column for the delete button */}
-                    </tr>
-                </thead>
-                <tbody>
-                    {attendanceRecords.map((record) => (
-                        <tr key={record._id}>
-                            <td>{record.employeeName}</td>
-                            <td>{record.employeeID}</td>
-                            <td>{record.department}</td>
-                            <td>{new Date(record.attendanceDate).toLocaleDateString()}</td>
-                            <td>{record.inTime}</td>
-                            <td>{record.outTime}</td>
-                            <td>{record.workHours}</td>
-                            <td>
-                                {/* Delete button */}
-                                <button onClick={() => deleteAttendanceRecord(record._id)}>
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="records-container">
+                {attendanceRecords.map((record) => (
+                    <div className="record-card" key={record._id}>
+                        <h3>{record.employeeName}</h3>
+                        <p><strong>ID:</strong> {record.employeeID}</p>
+                        <p><strong>Department:</strong> {record.department}</p>
+                        <p><strong>Date:</strong> {new Date(record.attendanceDate).toLocaleDateString()}</p>
+                        <p><strong>In Time:</strong> {record.inTime}</p>
+                        <p><strong>Out Time:</strong> {record.outTime}</p>
+                        <p><strong>Work Hours:</strong> {record.workHours}</p>
+                        <button onClick={() => deleteAttendanceRecord(record._id)}>Delete</button>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
