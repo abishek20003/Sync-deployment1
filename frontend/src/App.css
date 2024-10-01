@@ -4,6 +4,11 @@ body {
   font-family: 'Roboto', sans-serif;
   background-color: #f0f4f8;
   color: #333;
+  margin: 0;
+  height: 100vh; /* Full height of the viewport */
+  display: flex;
+  justify-content: center; /* Horizontally center */
+  align-items: center; /* Vertically center */
 }
 
 h1.company-name {
