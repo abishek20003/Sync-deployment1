@@ -14,28 +14,25 @@ const AttendanceForm = ({ addRecord }) => {
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
         setAttendanceDate(today);
 
-        // Get the current time in HH:MM format
+        // Get the current time in HH:MM format (24-hour format for input)
         const currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
         setInTime(currentTime);
         setOutTime(currentTime);
     }, []);
 
-    // Convert 24-hour format to 12-hour format with AM/PM
+    // Convert 24-hour format to 12-hour format with AM/PM for display
     const formatTime12Hour = (time) => {
         let [hour, minute] = time.split(':');
         hour = parseInt(hour, 10);
 
-        // Correctly determine AM/PM based on the 24-hour time
         const period = hour >= 12 ? 'PM' : 'AM';
 
-        // Convert 24-hour time to 12-hour format
         if (hour === 0) {
-            hour = 12; // Midnight (00:00) case
+            hour = 12; // Midnight case
         } else if (hour > 12) {
             hour -= 12; // Convert times greater than 12 to 12-hour format
         }
 
-        // Return the formatted 12-hour time with the period
         return `${hour}:${minute} ${period}`;
     };
 
@@ -113,11 +110,27 @@ const AttendanceForm = ({ addRecord }) => {
                     </tr>
                     <tr>
                         <td><label>In Time:</label></td>
-                        <td><input type="time" value={inTime} onChange={(e) => setInTime(e.target.value)} required /></td>
+                        <td>
+                            <input 
+                                type="time" 
+                                value={inTime} 
+                                onChange={(e) => setInTime(e.target.value)} 
+                                required 
+                            />
+                            <span className="time-display">{formatTime12Hour(inTime)}</span> {/* Display 12-hour format */}
+                        </td>
                     </tr>
                     <tr>
                         <td><label>Out Time:</label></td>
-                        <td><input type="time" value={outTime} onChange={(e) => setOutTime(e.target.value)} required /></td>
+                        <td>
+                            <input 
+                                type="time" 
+                                value={outTime} 
+                                onChange={(e) => setOutTime(e.target.value)} 
+                                required 
+                            />
+                            <span className="time-display">{formatTime12Hour(outTime)}</span> {/* Display 12-hour format */}
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan="2"><button type="submit">Add Record</button></td>

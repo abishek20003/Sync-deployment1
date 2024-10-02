@@ -1,128 +1,215 @@
-/* App.css */
-
+/* General body styling */
 body {
   font-family: 'Roboto', sans-serif;
   background-color: #f0f4f8;
   color: #333;
   margin: 0;
-  height: 100vh; /* Full height of the viewport */
+  height: 100vh;
   display: flex;
-  justify-content: center; /* Horizontally center */
-  align-items: center; /* Vertically center */
+  justify-content: center;
+  align-items: center;
 }
 
-h1.company-name {
-  text-align: center;
-  color: #2980b9;
-  margin: 20px;
-}
-
-.main-content {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 20px;
-  gap: 20px;
-}
-
-.form-section {
-  flex: 1;
+/* Centering the container and giving it a modern look */
+.container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f4f8;
 }
 
-.form-container {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+/* Navigation bar styling */
+nav {
+  margin-bottom: 20px;
 }
 
-.form-title, .table-title {
-  color: #2980b9;
-  margin-bottom: 10px;
+nav a {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
-.table-container {
-  flex: 1.5;
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  background-color: #ffffff;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-td, th {
-  padding: 12px;
-  border: 1px solid #dddddd;
-  text-align: left;
-}
-
-th {
+nav a:hover {
   background-color: #2980b9;
-  color: white;
+  color: #fff;
 }
 
+/* Attendance Form Styling */
+form {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+/* Label and Input Styling */
 label {
   font-weight: bold;
+  margin-bottom: 8px;
   display: block;
-  margin-bottom: 5px;
+  color: #333;
 }
 
-input[type="text"], input[type="date"], input[type="time"] {
+input[type="text"], input[type="date"], input[type="time"], input[type="password"] {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   margin-bottom: 15px;
   border: 1px solid #dddddd;
   border-radius: 4px;
   box-sizing: border-box;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
 }
 
+input:focus {
+  border-color: #2980b9;
+  outline: none;
+}
+
+/* Button Styling */
 button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background-color: #3498db;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s;
+  font-size: 18px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
   background-color: #2980b9;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-tr:hover {
-  background-color: #f1f1f1;
-  cursor: pointer;
+button:active {
+  transform: scale(0.98);
 }
 
+/* Password Form Styling */
+form div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+input[type="password"] {
+  background-image: url('data:image/svg+xml;base64,YOUR_ICON_HERE'); /* Optional: Add a padlock icon */
+  background-repeat: no-repeat;
+  background-position: 10px center;
+  padding-left: 40px;
+}
+
+/* Attendance Table Styling */
+.attendance-table-container {
+  padding: 30px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+.records-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.record-card {
+  flex: 1 1 calc(33.333% - 20px);
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.record-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.record-card h3 {
+  color: #2980b9;
+}
+
+.record-card p {
+  font-size: 14px;
+  color: #333;
+}
+
+.record-card button {
+  background-color: #e74c3c;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.record-card button:hover {
+  background-color: #c0392b;
+}
+
+/* Animation for Fade In */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.app-container {
-  animation: fadeIn 1s ease-in-out;
+/* Added styling for time display span */
+.time-display {
+  display: block;
+  margin-top: 5px;
+  font-size: 14px;
+  color: #666; /* Lighter color for contrast */
+  font-style: italic; /* Italic for differentiation */
 }
+
+/* Form table styling */
+table {
+  width: 100%;
+  border-collapse: collapse; /* Remove gaps between cells */
+}
+
+td {
+  padding: 10px; /* Padding for better spacing */
+  vertical-align: top; /* Align label and input fields */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* Light background for alternating rows */
+}
+
+button {
+  background-color: #3498db; /* Blue button */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
 button:hover {
   background-color: #2980b9; /* Darker blue on hover */
-  transform: scale(1.05);
-}
-
-tr:hover {
-  background-color: #f9f9f9; /* Light gray background on hover */
 }
