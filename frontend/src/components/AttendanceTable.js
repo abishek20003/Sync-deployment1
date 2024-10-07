@@ -1,54 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from './axiosConfig'; // Import axiosConfig
-import './AttendanceTable.css'; // Import CSS
+import './AttendanceTable.css'; // Make sure to create this CSS file
 
 const AttendanceTable = () => {
     const [attendanceRecords, setAttendanceRecords] = useState([]);
-    const [selectedDate, setSelectedDate] = useState(''); // State to store the selected date
 
-    // Function to fetch attendance records for a given date (or today's date by default)
-    const fetchAttendanceRecords = async (date = '') => {
+    // Fetch attendance records
+    const fetchAttendanceRecords = async () => {
         try {
-            const response = await axiosInstance.get('/attendance', {
-                params: { date }, // Send the selected date as a query parameter
-            });
+            const response = await axiosInstance.get('/attendance');
+            console.log(response.data); // Debugging - check if all records are fetched
             setAttendanceRecords(response.data);
         } catch (error) {
             console.error('Error fetching attendance records', error);
         }
     };
 
-    // Fetch today's attendance on component load
     useEffect(() => {
-        const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-        setSelectedDate(today); // Set today's date as default
-        fetchAttendanceRecords(today); // Fetch attendance for today
-    }, []);
+        // Fetch attendance records on component load
+        fetchAttendanceRecords();
 
-    // Handle the form submission when the user clicks "Submit"
-    const handleSubmit = (e) => {
-        e.preventDefault(); // Prevent form from submitting the traditional way
-        fetchAttendanceRecords(selectedDate); // Fetch attendance for the selected date
+        // Set interval to auto-refresh every 24 hours (86400000 ms)
+        const interval = setInterval(() => {
+            fetchAttendanceRecords();
+        }, 86400000); // Refresh every 24 hours
+
+        // Clear the interval on component unmount
+        return () => clearInterval(interval);
+    }, []); // Empty dependency array to run only on initial render
+
+    // Delete attendance record
+    const deleteAttendanceRecord = async (id) => {
+        try {
+            await axiosInstance.delete(`/attendance/${id}`);
+            // Refetch the records after deletion to ensure state is in sync
+            fetchAttendanceRecords();
+        } catch (error) {
+            console.error('Error deleting attendance record', error);
+        }
     };
 
     return (
         <div className="attendance-table-container">
-            <h2>Attendance Records</h2>
-
-            {/* Date Picker Form */}
-            <form onSubmit={handleSubmit}>
-                <div className="date-picker">
-                    <label htmlFor="attendanceDate">Select Date: </label>
-                    <input
-                        type="date"
-                        id="attendanceDate"
-                        value={selectedDate} // Bind input to selectedDate state
-                        onChange={(e) => setSelectedDate(e.target.value)} // Update state on date change
-                    />
-                    <button type="submit">Submit</button> {/* Submit button */}
-                </div>
-            </form>
-
+            <h2>Today's Attendance</h2>
             <div className="records-container">
                 {attendanceRecords.length > 0 ? (
                     attendanceRecords.map((record) => (
@@ -60,10 +54,11 @@ const AttendanceTable = () => {
                             <p><strong>In Time:</strong> {record.inTime}</p>
                             <p><strong>Out Time:</strong> {record.outTime}</p>
                             <p><strong>Work Hours:</strong> {record.workHours}</p>
+                            <button onClick={() => deleteAttendanceRecord(record._id)}>Delete</button>
                         </div>
                     ))
                 ) : (
-                    <p>No attendance records found for {selectedDate}</p> // Display message if no records found
+                    <p>No records found.</p>
                 )}
             </div>
         </div>
