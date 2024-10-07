@@ -18,7 +18,7 @@ const attendanceSchema = new mongoose.Schema({
     employeeName: String,
     employeeID: String,
     department: String,
-    attendanceDate: String, // Change to String for simpler date filtering (in format YYYY-MM-DD)
+    attendanceDate: String, // Keep as String for date filtering (format YYYY-MM-DD)
     inTime: String,
     outTime: String,
     workHours: String,
@@ -31,9 +31,10 @@ app.get('/', (req, res) => {
     res.send('Welcome to the Attendance Management API');
 });
 
+// Add attendance record
 app.post('/add-attendance', async (req, res) => {
     const { employeeName, employeeID, department, inTime, outTime, workHours } = req.body;
-    const attendanceDate = new Date().toISOString().split('T')[0]; // Get only the date part (YYYY-MM-DD)
+    const attendanceDate = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
     
     try {
         const attendance = new Attendance({ employeeName, employeeID, department, attendanceDate, inTime, outTime, workHours });
@@ -44,18 +45,23 @@ app.post('/add-attendance', async (req, res) => {
     }
 });
 
+// Fetch attendance records with optional date filter
 app.get('/attendance', async (req, res) => {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-    
+    // Get the date from the query parameters (YYYY-MM-DD format)
+    const { date } = req.query;
+
+    let filterDate = date || new Date().toISOString().split('T')[0]; // Default to today if no date is provided
+
     try {
-        // Fetch attendance records only for today
-        const attendanceRecords = await Attendance.find({ attendanceDate: today });
+        // Fetch attendance records for the given date
+        const attendanceRecords = await Attendance.find({ attendanceDate: filterDate });
         res.json(attendanceRecords);
     } catch (err) {
         res.status(500).send('Error retrieving attendance records');
     }
 });
 
+// Delete attendance record by ID
 app.delete('/attendance/:id', async (req, res) => {
     try {
         const attendanceId = req.params.id;
@@ -69,8 +75,6 @@ app.delete('/attendance/:id', async (req, res) => {
         res.status(500).send('Error deleting attendance record');
     }
 });
-
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

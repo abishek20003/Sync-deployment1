@@ -1,26 +1,35 @@
+/* Container for the entire attendance table */
 .attendance-table-container {
     padding: 20px;
+    max-height: 100vh; /* Set a max height for the container */
+    overflow-y: auto;  /* Enable vertical scrolling if content exceeds container height */
 }
 
+/* Records container: flex layout with vertical stacking */
 .records-container {
     display: flex;
     flex-direction: column; /* Stack cards vertically */
     gap: 15px; /* Space between cards */
+    overflow-y: auto;  /* Enable scrolling if necessary */
 }
 
+/* Individual record card styling */
 .record-card {
     background-color: #ffffff;
     border: 1px solid #dddddd;
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Ensure the cards are rendered on top */
 }
 
+/* Header styling within the record card */
 .record-card h3 {
     margin: 0 0 10px; /* Margin adjustments for titles */
     color: #2980b9;
 }
 
+/* Paragraph styling for details within the record card */
 .record-card p {
     margin: 5px 0; /* Space between lines */
 }
@@ -41,6 +50,78 @@
 }
 
 /* Media query for mobile responsiveness */
+@media (max-width: 768px) {
+    .record-card {
+        padding: 10px; /* Less padding for mobile cards */
+    }
+
+    .record-card h3 {
+        font-size: 18px;
+    }
+
+    .record-card p {
+        font-size: 14px;
+    }
+
+    .record-card button {
+        width: 100%; /* Full width button on mobile */
+    }
+}
+/* Add styling for the date picker */
+.date-picker {
+    margin-bottom: 20px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #dddddd;
+    border-radius: 4px;
+}
+
+/* Keep the rest of your CSS here */
+.attendance-table-container {
+    padding: 20px;
+    max-height: 100vh; /* Set a max height for the container */
+    overflow-y: auto;  /* Enable vertical scrolling if content exceeds container height */
+}
+
+.records-container {
+    display: flex;
+    flex-direction: column; /* Stack cards vertically */
+    gap: 15px; /* Space between cards */
+    overflow-y: auto;  /* Enable scrolling if necessary */
+}
+
+.record-card {
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Ensure the cards are rendered on top */
+}
+
+.record-card h3 {
+    margin: 0 0 10px; /* Margin adjustments for titles */
+    color: #2980b9;
+}
+
+.record-card p {
+    margin: 5px 0; /* Space between lines */
+}
+
+.record-card button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 10px;
+    transition: background-color 0.3s;
+}
+
+.record-card button:hover {
+    background-color: #2980b9;
+}
+
 @media (max-width: 768px) {
     .record-card {
         padding: 10px; /* Less padding for mobile cards */
